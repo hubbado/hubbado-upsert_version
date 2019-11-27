@@ -1,11 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "activerecord/upsert_version/version"
+require "upsert_version/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "activerecord-upsert_version"
-  spec.version       = Activerecord::UpsertVersion::VERSION
+  spec.version       = UpsertVersion::VERSION
   spec.authors       = ["Stanislaw Klajn", "Sam Stickland"]
   spec.email         = ["stan@hubbado.com", "sam@hubbado.com"]
 

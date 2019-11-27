@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "activerecord/upsert_version"
+require "upsert_version"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
