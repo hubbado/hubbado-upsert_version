@@ -6,7 +6,7 @@ Upsert means that if an attempted INSERT results in a conflict then an UPDATE is
 
 A version is provided along with the row data, that is the version of the given data. If an existing row has a version number greater than this version then no changes are made. This is designed to allow idempotent reply of SQL updates commands.
 
-Note: Tests are currently broken on Codeship which is using Ubuntu 18 LTS which only has sqlite 3.22 and we need a later version for the tests
+This gem is using `pg_tester` to start a local temporary postgres server, but for some reason this doesn't work correctly on Codeship.
 
 ## Installation
 
