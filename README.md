@@ -1,4 +1,4 @@
-# Activerecord::UpsertVersion
+# Hubbado::UpsertVersion
 
 Provides an ActiveRecord based upsert with a per row version column
 
@@ -13,7 +13,7 @@ This gem is using `pg_tester` to start a local temporary postgres server, but fo
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'activerecord-upsert_version'
+gem 'hubbado-upsert_version'
 ```
 
 And then execute:
@@ -22,7 +22,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install activerecord-upsert_version
+    $ gem install hubbado-upsert_version
 
 ## Usage
 
@@ -36,4 +36,4 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/hubbado/activerecord-upsert_version.
+Bug reports and pull requests are welcome on GitHub at https://github.com/hubbado/hubbado-upsert_version.
