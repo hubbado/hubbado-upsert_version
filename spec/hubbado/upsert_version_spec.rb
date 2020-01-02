@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'ffaker'
 
-RSpec.describe UpsertVersion do
+RSpec.describe Hubbado::UpsertVersion do
   context 'when dealing with a single target column' do
     subject { described_class.new(model_class) }
 

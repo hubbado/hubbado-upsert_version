@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "upsert_version"
+require "hubbado/upsert_version"
 require 'support/models'
 require 'pg_tester'
 require 'byebug'
