@@ -1,16 +1,16 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "upsert_version/version"
+require "hubbado/upsert_version/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "activerecord-upsert_version"
-  spec.version       = UpsertVersion::VERSION
+  spec.name          = "hubbado-upsert_version"
+  spec.version       = Hubbado::UpsertVersion::VERSION
   spec.authors       = ["Stanislaw Klajn", "Sam Stickland"]
   spec.email         = ["stan@hubbado.com", "sam@hubbado.com"]
 
   spec.summary       = %q{An ActiveRecord based library for upserting with a per row version}
-  spec.homepage      = "https://www.github.com/hubbado/activerecord-upsert_version"
+  spec.homepage      = "https://www.github.com/hubbado/hubbado-upsert_version"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -30,7 +30,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "activerecord"
+  spec.add_runtime_dependency 'activerecord'
+
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "codecov"
