@@ -6,7 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
-
 .rspec_status
 .byebug_history
 Gemfile.lock
+hubbado-upsert_version-*.gem
