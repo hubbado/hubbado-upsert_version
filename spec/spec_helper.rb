@@ -1,8 +1,8 @@
 require "bundler/setup"
 require "hubbado/upsert_version"
 require 'support/models'
-require 'pg_tester'
 require 'byebug'
+require 'database_cleaner/active_record'
 
 if ENV['CI'] == 'true'
   require 'simplecov'
@@ -14,22 +14,21 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    psql = PgTester.new(database: 'upsert_version')
-    psql.setup
+    ENV['RACK_ENV'] = 'test'
+    db_yml = YAML.load_file(ERB.new(File.join('db', 'config.yml')).result)
 
-    ActiveRecord::Base.establish_connection(
-      adapter: "postgresql",
-      host: psql.host,
-      database: psql.database,
-      user: psql.user,
-      port: psql.port
-    )
+    ActiveRecord::Base.configurations = db_yml
+    ActiveRecord::Base.establish_connection
 
-    load File.dirname(__FILE__) + '/schema.rb'
+    DatabaseCleaner.strategy = :transaction
   end
 
-  config.after(:suite) do
-    PgTester.new(database: 'upsert_version').teardown
+  config.before :each do
+    DatabaseCleaner.start
+  end
+
+  config.after :each do
+    DatabaseCleaner.clean
   end
 
   # Enable flags like --only-failures and --next-failure
