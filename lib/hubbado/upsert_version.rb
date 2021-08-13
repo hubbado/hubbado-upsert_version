@@ -53,7 +53,7 @@ module Hubbado
           "encrypted_#{key}_salt" => encrypted_record.send("encrypted_#{key}_salt"),
           "encrypted_#{key}_iv" => encrypted_record.send("encrypted_#{key}_iv")
         }
-      end.reduce(:merge)
+      end.reduce(:merge) || {}
 
       attributes.except(*attributes_for_encryption.keys).merge(encrypted_attribtues)
     end
