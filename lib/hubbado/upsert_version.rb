@@ -11,7 +11,8 @@ module Hubbado
     end
 
     def call(attributes)
-      casted = attributes.map do |key, value|
+      encrypted = encrypted_attributes(attributes)
+      casted = encrypted.map do |key, value|
         [key.to_sym, table[key].type_cast_for_database(value)]
       end.to_h
 
@@ -39,6 +40,23 @@ module Hubbado
     private
 
     attr_reader :klass, :target
+
+    def encrypted_attributes(attributes)
+      return attributes if !klass.respond_to?(:encrypted_attributes) ||
+                           klass.encrypted_attributes.keys.none?
+
+      attributes_for_encryption = attributes.slice(*klass.encrypted_attributes.keys)
+      encrypted_record = klass.new(attributes_for_encryption)
+      encrypted_attribtues = attributes_for_encryption.keys.map do |key|
+        {
+          "encrypted_#{key}" => encrypted_record.send("encrypted_#{key}"),
+          "encrypted_#{key}_salt" => encrypted_record.send("encrypted_#{key}_salt"),
+          "encrypted_#{key}_iv" => encrypted_record.send("encrypted_#{key}_iv")
+        }
+      end.reduce(:merge)
+
+      attributes.except(*attributes_for_encryption.keys).merge(encrypted_attribtues)
+    end
 
     def table
       @table ||= klass.arel_table

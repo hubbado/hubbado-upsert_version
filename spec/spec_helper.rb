@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "hubbado/upsert_version"
+require 'attr_encrypted'
 require 'support/models'
 require 'byebug'
 require 'database_cleaner/active_record'
