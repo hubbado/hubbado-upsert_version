@@ -130,6 +130,21 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }
             .not_to change { model.iban }
         end
+
+        context 'and no encrypted attribute is updated' do
+          let(:attributes) do
+            {
+              id: id,
+              version: new_version
+            }
+          end
+
+          it 'does update the existing model' do
+            expect { subject.(attributes); model.reload }
+              .to change { model.version }.from(model_version).to(new_version)
+              .and change { model.updated_at }
+          end
+        end
       end
     end
   end
