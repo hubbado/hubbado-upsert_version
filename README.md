@@ -28,6 +28,12 @@ Or install it yourself as:
 
 `ActiveRecord::UpsertVersion.(**attributes, version: <version>)`
 
+## Testing
+
+Run `RACK_ENV=test rake db:create` to prepare test database.
+Run `RACK_ENV=test rake db:migrate` to run migrations.
+Run `rspec` to test all scenarios.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
