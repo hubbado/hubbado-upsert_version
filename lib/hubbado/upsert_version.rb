@@ -42,10 +42,9 @@ module Hubbado
     attr_reader :klass, :target
 
     def encrypted_attributes(attributes)
-      return attributes if !klass.respond_to?(:encrypted_attributes) ||
-                           klass.encrypted_attributes.keys.none?
+      return attributes unless klass_encrypted_attributes
+      attributes_for_encryption = attributes.slice(*klass_encrypted_attributes)
 
-      attributes_for_encryption = attributes.slice(*klass.encrypted_attributes.keys)
       encrypted_record = klass.new(attributes_for_encryption)
       encrypted_attribtues = attributes_for_encryption.keys.map do |key|
         {
@@ -56,6 +55,16 @@ module Hubbado
       end.reduce(:merge) || {}
 
       attributes.except(*attributes_for_encryption.keys).merge(encrypted_attribtues)
+    end
+
+    def klass_encrypted_attributes
+      if klass.respond_to?(:attr_encrypted_encrypted_attributes) &&
+         klass.attr_encrypted_encrypted_attributes.keys.any?
+        klass.attr_encrypted_encrypted_attributes.keys
+      elsif klass.respond_to?(:encrypted_attributes) &&
+            klass.encrypted_attributes.keys.any?
+        klass.encrypted_attributes.keys
+      end
     end
 
     def table
