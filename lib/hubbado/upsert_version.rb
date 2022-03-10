@@ -61,8 +61,7 @@ module Hubbado
       if klass.respond_to?(:attr_encrypted_encrypted_attributes) &&
          klass.attr_encrypted_encrypted_attributes.keys.any?
         klass.attr_encrypted_encrypted_attributes.keys
-      elsif klass.respond_to?(:encrypted_attributes) &&
-            klass.encrypted_attributes.keys.any?
+      elsif klass.respond_to?(:encrypted_attributes) && klass.encrypted_attributes&.keys&.any?
         klass.encrypted_attributes.keys
       end
     end
