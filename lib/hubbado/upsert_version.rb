@@ -7,17 +7,18 @@ module Hubbado
 
     def initialize(klass, target: klass.primary_key)
       @klass = klass
-      @target = Array.wrap(target).map &:to_sym
+      @target = Array.wrap(target).map(&:to_sym)
     end
 
     def call(attributes)
       encrypted = encrypted_attributes(attributes)
-      casted = encrypted.map do |key, value|
+      casted = encrypted.to_h do |key, value|
         [key.to_sym, table[key].type_cast_for_database(value)]
-      end.to_h
+      end
 
       if casted.values_at(*target, :version).any?(&:blank?)
-        raise Error, "Both target (#{target.join ', '}) and version values are required for upsert_version"
+        raise Error,
+          "Both target (#{target.join ', '}) and version values are required for upsert_version"
       end
 
       now = DateTime.now.utc
@@ -42,27 +43,22 @@ module Hubbado
     attr_reader :klass, :target
 
     def encrypted_attributes(attributes)
-      return attributes unless klass_encrypted_attributes
-      attributes_for_encryption = attributes.slice(*klass_encrypted_attributes)
+      return attributes unless klass_lockbox_attributes
+      attributes_for_encryption = attributes.slice(*klass_lockbox_attributes)
 
       encrypted_record = klass.new(attributes_for_encryption)
-      encrypted_attribtues = attributes_for_encryption.keys.map do |key|
+      encrypted_attributes = attributes_for_encryption.keys.map do |key|
         {
-          "encrypted_#{key}" => encrypted_record.send("encrypted_#{key}"),
-          "encrypted_#{key}_salt" => encrypted_record.send("encrypted_#{key}_salt"),
-          "encrypted_#{key}_iv" => encrypted_record.send("encrypted_#{key}_iv")
+          "#{key}_ciphertext" => encrypted_record.send("#{key}_ciphertext")
         }
       end.reduce(:merge) || {}
 
-      attributes.except(*attributes_for_encryption.keys).merge(encrypted_attribtues)
+      attributes.except(*attributes_for_encryption.keys).merge(encrypted_attributes)
     end
 
-    def klass_encrypted_attributes
-      if klass.respond_to?(:attr_encrypted_encrypted_attributes) &&
-         klass.attr_encrypted_encrypted_attributes.keys.any?
-        klass.attr_encrypted_encrypted_attributes.keys
-      elsif klass.respond_to?(:encrypted_attributes) && klass.encrypted_attributes&.keys&.any?
-        klass.encrypted_attributes.keys
+    def klass_lockbox_attributes
+      if klass.respond_to?(:lockbox_attributes) && klass.lockbox_attributes.keys.any?
+        klass.lockbox_attributes.keys
       end
     end
 
@@ -86,7 +82,7 @@ module Hubbado
     end
 
     def has_column?(name)
-      klass.columns.any? { |column| column.name.to_s == name .to_s}
+      klass.columns.any? { |column| column.name.to_s == name.to_s }
     end
   end
 end

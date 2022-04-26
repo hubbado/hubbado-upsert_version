@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "hubbado/upsert_version"
-require 'attr_encrypted'
+require 'lockbox'
+require 'support/db/establish_connection'
 require 'support/models'
 require 'byebug'
 require 'database_cleaner/active_record'
@@ -15,12 +16,7 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    ENV['RACK_ENV'] = 'test'
-    db_yml = YAML.load_file(ERB.new(File.join('db', 'config.yml')).result)
-
-    ActiveRecord::Base.configurations = db_yml
-    ActiveRecord::Base.establish_connection
-
+    Lockbox.master_key = Support::AttrEncryptedModel::LOCKBOX_TEST_KEY
     DatabaseCleaner.strategy = :transaction
   end
 

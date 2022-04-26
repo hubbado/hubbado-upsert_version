@@ -83,9 +83,7 @@ RSpec.describe Hubbado::UpsertVersion do
         model = model_class.find(id)
 
         expect(model.bank_account).to eq new_bank_account
-        expect(model.encrypted_bank_account).not_to be nil
-        expect(model.encrypted_bank_account_salt).not_to be nil
-        expect(model.encrypted_bank_account_iv).not_to be nil
+        expect(model.bank_account_ciphertext).not_to be nil
       end
 
       it "doesn't set other encrypted columns" do
@@ -93,9 +91,7 @@ RSpec.describe Hubbado::UpsertVersion do
         model = model_class.find(id)
 
         expect(model.iban).to be nil
-        expect(model.encrypted_iban).to be nil
-        expect(model.encrypted_iban_salt).to be nil
-        expect(model.encrypted_iban_iv).to be nil
+        expect(model.iban_ciphertext).to be nil
       end
 
       it "sets the created_at and updated_at columns" do
