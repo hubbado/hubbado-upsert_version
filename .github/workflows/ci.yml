@@ -1,0 +1,60 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    env:
+      ImageOS: ubuntu20
+      BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${{ secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM }}
+      BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_GITHUB__COM }}
+      RAILS_ENV: test
+
+    services:
+      postgres:
+        image: postgres:alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --name postgres
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Store PostgreSQL IP
+        id: postgresql-ip
+        run: echo "::set-output name=ip::$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.postgres.id }})"
+
+      - name: Install dependent libraries
+        run: sudo apt-get install -y libpq-dev
+
+      - uses: actions/checkout@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Prepare database
+        run: bundle exec rake db:test:prepare
+        env:
+          DATABASE_URL: postgres://postgres@${{ steps.postgresql-ip.outputs.ip }}:5432
+
+      - name: Tests
+        run: bundle exec rspec
+        env:
+          DATABASE_URL: postgres://postgres@${{ steps.postgresql-ip.outputs.ip }}:5432
+          DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: coverage
+          files: coverage.xml

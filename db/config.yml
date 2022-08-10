@@ -9,4 +9,5 @@ development:
 
 test:
   <<: *default
+  url: <%= ENV["DATABASE_URL"] || "postgres://localhost:5432" %>
   database: hubbado-upsert_version_test
