@@ -8,10 +8,10 @@ require 'database_cleaner/active_record'
 
 if ENV['CI'] == 'true'
   require 'simplecov'
-  SimpleCov.start
+  require 'simplecov-cobertura'
 
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+  SimpleCov.start
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 
 RSpec.configure do |config|
