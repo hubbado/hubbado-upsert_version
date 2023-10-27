@@ -7,9 +7,9 @@ RSpec.describe Hubbado::UpsertVersion do
 
     let(:model_class) { Support::Model }
     let(:attributes) { {
-      id: id,
-      subject: new_subject,
-      version: new_version
+      "id" => id,
+      "subject" => new_subject,
+      "version" => new_version
     }}
     let(:new_subject) { FFaker::Lorem.sentence }
     let(:id) { rand(100..10_000) }
@@ -26,6 +26,15 @@ RSpec.describe Hubbado::UpsertVersion do
         expect(model.created_at).to be_within(2.seconds).of(Time.current)
         expect(model.updated_at).to be_within(2.seconds).of(Time.current)
       end
+
+      it "returns a result with the upserted values" do
+        result = subject.(attributes)
+
+        expect(result.upserted?).to eq(true)
+        expect(result.attributes).to include(
+          **attributes
+        )
+      end
     end
 
     context 'when insert conflicts with unique constraint' do
@@ -40,6 +49,15 @@ RSpec.describe Hubbado::UpsertVersion do
             .and change { model.version }.from(model_version).to(new_version)
             .and change { model.updated_at }
         end
+
+        it "returns a result with the upserted values" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(true)
+          expect(result.attributes).to include(
+            **attributes
+          )
+        end
       end
 
       context 'but model is in the same version' do
@@ -48,6 +66,12 @@ RSpec.describe Hubbado::UpsertVersion do
         it 'does not update the existing model' do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
         end
+
+        it "does not return upserted result" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(false)
+        end
       end
 
       context 'but model is in the higher version' do
@@ -55,6 +79,12 @@ RSpec.describe Hubbado::UpsertVersion do
 
         it 'does not update the existing model' do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
+        end
+
+        it "does not return upserted result" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(false)
         end
       end
     end
@@ -150,10 +180,10 @@ RSpec.describe Hubbado::UpsertVersion do
 
     let(:model_class) { Support::DualConstraintModel }
     let(:attributes) { {
-      user_id: user_id,
-      chat_id: chat_id,
-      company_id: new_company_id,
-      version: new_version
+      "user_id" => user_id,
+      "chat_id" => chat_id,
+      "company_id" => new_company_id,
+      "version" => new_version
     }}
     let(:new_company_id) { SecureRandom.uuid }
     let(:user_id) { SecureRandom.uuid }
@@ -172,6 +202,15 @@ RSpec.describe Hubbado::UpsertVersion do
 
       it "inserts the new record" do
         expect { subject.(attributes) }.to change { model_class.count }.by 1
+      end
+
+      it "returns a result with the upserted values" do
+        result = subject.(attributes)
+
+        expect(result.upserted?).to eq(true)
+        expect(result.attributes).to include(
+          **attributes
+        )
       end
     end
 
@@ -193,6 +232,15 @@ RSpec.describe Hubbado::UpsertVersion do
             .to change { model.company_id }.to(new_company_id)
             .and change { model.version }.from(model_version).to(new_version)
         end
+
+        it "returns a result with the upserted values" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(true)
+          expect(result.attributes).to include(
+            **attributes
+          )
+        end
       end
 
       context 'but model is in the same version' do
@@ -201,6 +249,12 @@ RSpec.describe Hubbado::UpsertVersion do
         it 'does not update the existing model' do
           expect { subject.(attributes); model.reload }.not_to change { model.company_id }
         end
+
+        it "does not return upserted result" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(false)
+        end
       end
 
       context 'but model is in the higher version' do
@@ -208,6 +262,12 @@ RSpec.describe Hubbado::UpsertVersion do
 
         it 'does not update the existing model' do
           expect { subject.(attributes); model.reload }.not_to change { model.company_id }
+        end
+
+        it "does not return upserted result" do
+          result = subject.(attributes)
+
+          expect(result.upserted?).to eq(false)
         end
       end
     end
