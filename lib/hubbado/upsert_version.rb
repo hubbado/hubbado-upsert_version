@@ -5,6 +5,9 @@ module Hubbado
   class UpsertVersion
     Error = Class.new(StandardError)
 
+    Unchanged = Data.define { def upserted? = false }
+    Upserted = Data.define(:attributes) { def upserted? = true }
+
     def initialize(klass, target: klass.primary_key)
       @klass = klass
       @target = Array.wrap(target).map(&:to_sym)
@@ -35,7 +38,14 @@ module Hubbado
       insert = upsert_insert(casted)
       update = upsert_update(casted)
 
-      ActiveRecord::Base.connection.execute "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update}"
+      result = ActiveRecord::Base.connection.execute "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update} RETURNING *"
+      attributes = result.to_a.first
+
+      if attributes
+        Upserted.new(attributes)
+      else
+        Unchanged.new
+      end
     end
 
     private
