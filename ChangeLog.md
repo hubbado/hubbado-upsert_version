@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+# [2.1.0 - 2023-10-31]
+## Added
+- Return a result object with all columns in the upsert query when the row is inserted or updated.
+
 # [2.0.0 - 2022-04-26]
 ## Changed
 - Due to Rails 7 breaking attr_encrypted and replacing it with it's own encryption we decided to move to `lockbox` gem for encryption. It is very different from previous approach, as it hold only 1 field in the database.
