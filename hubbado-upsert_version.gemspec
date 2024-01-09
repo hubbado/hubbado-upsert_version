@@ -31,6 +31,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency 'activerecord'
+  spec.add_runtime_dependency 'evt-configure'
+  spec.add_runtime_dependency 'evt-mimic'
 
   spec.add_development_dependency "lockbox"
   spec.add_development_dependency "bundler"

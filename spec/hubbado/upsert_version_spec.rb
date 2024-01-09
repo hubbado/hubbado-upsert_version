@@ -2,6 +2,17 @@ require 'spec_helper'
 require 'ffaker'
 
 RSpec.describe Hubbado::UpsertVersion do
+  describe '.build' do
+    it 'can build an instance' do
+      model_class = Support::Model
+
+      instance = described_class.build(model_class, target: :id)
+
+      expect(instance.klass).to be model_class
+      expect(instance.target).to eq [:id]
+    end
+  end
+
   context 'when dealing with a single target column' do
     subject { described_class.new(model_class) }
 
