@@ -1,14 +1,28 @@
 require "hubbado/upsert_version/version"
 require 'active_record'
+require 'configure'
+require 'mimic'
 
 module Hubbado
   class UpsertVersion
+    include Configure
+
+    configure :upsert_version
+
+    attr_reader :klass, :target
+
     Error = Class.new(StandardError)
 
     Unchanged = Data.define { def upserted? = false }
     Upserted = Data.define(:attributes) { def upserted? = true }
 
-    def initialize(klass, target: klass.primary_key)
+    def self.build(klass, target: nil)
+      new(klass, target: target)
+    end
+
+    def initialize(klass, target: nil)
+      target ||= klass.primary_key
+
       @klass = klass
       @target = Array.wrap(target).map(&:to_sym)
     end
@@ -48,9 +62,27 @@ module Hubbado
       end
     end
 
-    private
+    module Substitute
+      include RecordInvocation
 
-    attr_reader :klass, :target
+      record def call(attributes)
+        @result
+      end
+
+      def set_result(result)
+        @result = result
+      end
+
+      def called?
+        invoked?(:call)
+      end
+
+      def called_with?(attributes)
+        invoked?(:call, attributes: attributes)
+      end
+    end
+
+    private
 
     def encrypted_attributes(attributes)
       return attributes unless klass_lockbox_attributes

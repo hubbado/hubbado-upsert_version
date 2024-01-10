@@ -2,9 +2,12 @@ require "bundler/setup"
 require "hubbado/upsert_version"
 require 'lockbox'
 require 'support/db/establish_connection'
-require 'support/models'
-require 'byebug'
+require 'hubbado/upsert_version/controls'
+require 'hubbado/upsert_version/controls/models'
+require 'debug'
 require 'database_cleaner/active_record'
+
+LOCKBOX_TEST_KEY = '0000000000000000000000000000000000000000000000000000000000000000'.freeze
 
 if ENV['CI'] == 'true'
   require 'simplecov'
@@ -16,7 +19,7 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    Lockbox.master_key = Support::AttrEncryptedModel::LOCKBOX_TEST_KEY
+    Lockbox.master_key = LOCKBOX_TEST_KEY
     DatabaseCleaner.strategy = :transaction
   end
 

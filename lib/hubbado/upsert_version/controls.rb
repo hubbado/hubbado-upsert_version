@@ -1,0 +1,5 @@
+require_relative 'controls/id'
+require_relative 'controls/version'
+require_relative 'controls/attributes'
+require_relative 'controls/unchanged'
+require_relative 'controls/upserted'

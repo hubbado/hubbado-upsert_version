@@ -2,11 +2,9 @@
 
 Provides an ActiveRecord based upsert with a per row version column
 
-Upsert means that if an attempted INSERT results in a conflict then an UPDATE is done instead. This is atomic, but it requires that a duplicate entry is detected.
+Upsert means that if an attempted INSERT results in a conflict then an UPDATE is done instead. This is atomic, but it requires that a duplicate entry is detected. Duplicate rows are detected based on the column values for the row or rows passed to `target`. A unique constraint for these columns must exist in the database.
 
-A version is provided along with the row data, that is the version of the given data. If an existing row has a version number greater than this version then no changes are made. This is designed to allow idempotent reply of SQL updates commands.
-
-This gem is using `standalone_migrations` to use Rails style migrations with rake commands without using rails.
+A version is provided along with the row data. If an existing row has a version number greater than this version then no changes are made.
 
 ## Installation
 
@@ -26,9 +24,39 @@ Or install it yourself as:
 
 ## Usage
 
-`ActiveRecord::UpsertVersion.(**attributes, version: <version>)`
+As a standalone class:
+
+```ruby
+upsert_version = Hubbado::UpsertVersion.new(SomeModel, target: :id)
+
+attributes = {
+  id: some_model_id,
+  version: some_version,
+  some_model_attribute: :some_value
+}
+
+upsert_version.(attributes)
+```
+
+As a dependency:
+
+```ruby
+class SomeClass
+  dependency :upsert_version
+
+  def self.build
+    Hubbado::UpsertVersion.configure(self, SomeModel, target: :id)
+  end
+
+  def call
+    upsert_version.(attributes)
+  end
+end
+```
 
 ## Testing
+
+This gem is using `standalone_migrations` to use Rails style migrations with rake commands without using rails.
 
 Run `RACK_ENV=test rake db:create` to prepare test database.
 Run `RACK_ENV=test rake db:migrate` to run migrations.

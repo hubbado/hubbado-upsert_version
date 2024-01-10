@@ -31,12 +31,14 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency 'activerecord'
+  spec.add_runtime_dependency 'evt-configure'
+  spec.add_runtime_dependency 'evt-mimic'
 
-  spec.add_development_dependency "lockbox"
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "byebug"
+  spec.add_development_dependency "evt-dependency"
+  spec.add_development_dependency "lockbox"
+  spec.add_development_dependency "debug"
   spec.add_development_dependency "database_cleaner-active_record"
-  spec.add_development_dependency "ffaker"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
