@@ -1,10 +1,12 @@
 require "hubbado/upsert_version/version"
 require 'active_record'
-require 'configure'; Configure.activate
+require 'configure'
 require 'mimic'
 
 module Hubbado
   class UpsertVersion
+    include Configure
+
     configure :upsert_version
 
     attr_reader :klass, :target
@@ -69,6 +71,10 @@ module Hubbado
 
       def set_result(result)
         @result = result
+      end
+
+      def called?
+        invoked?(:call)
       end
 
       def called_with?(attributes)

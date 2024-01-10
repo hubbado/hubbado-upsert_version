@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'evt-configure'
   spec.add_runtime_dependency 'evt-mimic'
 
+  spec.add_development_dependency "evt-dependency"
   spec.add_development_dependency "lockbox"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "byebug"
