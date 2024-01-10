@@ -5,11 +5,8 @@ RSpec.describe Hubbado::UpsertVersion::Substitute do
   let(:caller_class) do
     Class.new do
       include Dependency
-      dependency :upsert_version, Hubbado::UpsertVersion
 
-      def call(attributes)
-        upsert_version.(attributes)
-      end
+      dependency :upsert_version, Hubbado::UpsertVersion
     end
   end
 

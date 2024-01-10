@@ -195,10 +195,11 @@ RSpec.describe Hubbado::UpsertVersion do
       "company_id" => new_company_id,
       "version" => new_version
     }}
+    # TODO: Replace with Controls
     let(:new_company_id) { SecureRandom.uuid }
     let(:user_id) { SecureRandom.uuid }
     let(:chat_id) { SecureRandom.uuid }
-    let(:new_version) { rand 3..8 }
+    let(:new_version) { 2 }
 
     context 'when unique constraint is not conflicting on insert' do
       before do
@@ -229,7 +230,7 @@ RSpec.describe Hubbado::UpsertVersion do
         model_class.create(
           user_id: user_id,
           chat_id: chat_id,
-          company_id: SecureRandom.uuid,
+          company_id: SecureRandom.uuid, # TODO: Replace with Control
           version: model_version
         )
       end
