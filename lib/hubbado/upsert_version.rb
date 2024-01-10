@@ -52,7 +52,9 @@ module Hubbado
       insert = upsert_insert(casted)
       update = upsert_update(casted)
 
-      result = ActiveRecord::Base.connection.execute "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update} RETURNING *"
+      result = ActiveRecord::Base.connection.execute(
+        "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update} RETURNING *"
+      )
       attributes = result.to_a.first
 
       if attributes
@@ -99,9 +101,8 @@ module Hubbado
     end
 
     def klass_lockbox_attributes
-      if klass.respond_to?(:lockbox_attributes) && klass.lockbox_attributes.keys.any?
-        klass.lockbox_attributes.keys
-      end
+      return unless klass.respond_to?(:lockbox_attributes) && klass.lockbox_attributes.keys.any?
+      klass.lockbox_attributes.keys
     end
 
     def table
