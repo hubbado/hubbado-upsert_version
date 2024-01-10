@@ -1,10 +1,9 @@
 require 'spec_helper'
-require 'ffaker'
 
 RSpec.describe Hubbado::UpsertVersion do
   describe '.build' do
     it 'can build an instance' do
-      model_class = Support::Model
+      model_class = Hubbado::UpsertVersion::Controls::Models::Model
 
       instance = described_class.build(model_class, target: :id)
 
@@ -16,15 +15,15 @@ RSpec.describe Hubbado::UpsertVersion do
   context 'when dealing with a single target column' do
     subject { described_class.new(model_class) }
 
-    let(:model_class) { Support::Model }
+    let(:model_class) { Hubbado::UpsertVersion::Controls::Models::Model.model_class }
     let(:attributes) { {
       "id" => id,
       "subject" => new_subject,
       "version" => new_version
     }}
-    let(:new_subject) { FFaker::Lorem.sentence }
-    let(:id) { rand(100..10_000) }
-    let(:new_version) { rand 3..8 }
+    let(:new_subject) { Hubbado::UpsertVersion::Controls::Models::Model.subject }
+    let(:id) { Hubbado::UpsertVersion::Controls::Models::Model.id }
+    let(:new_version) { Hubbado::UpsertVersion::Controls::Models::Model.version }
 
     context 'when unique constraint is not conflicting on insert' do
       it "inserts the new record" do
@@ -104,15 +103,15 @@ RSpec.describe Hubbado::UpsertVersion do
   context 'when dealing with encrypted attributes' do
     subject { described_class.new(model_class) }
 
-    let(:model_class) { Support::AttrEncryptedModel }
-    let(:attributes) { {
-      id: id,
-      bank_account: new_bank_account,
-      version: new_version
-    }}
-    let(:new_bank_account) { '0987654321' }
-    let(:id) { rand(100..10_000) }
-    let(:new_version) { rand 3..8 }
+    let(:model_class) { Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.model_class }
+    let(:attributes) do
+      Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.attributes(
+        id: id, bank_account: bank_account, version: version
+      )
+    end
+    let(:id) { Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.id }
+    let(:bank_account) { Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.bank_account }
+    let(:version) { 2 }
 
     context 'when unique constraint is not conflicting on insert' do
       it "inserts the new record" do
@@ -123,7 +122,7 @@ RSpec.describe Hubbado::UpsertVersion do
         subject.(attributes)
         model = model_class.find(id)
 
-        expect(model.bank_account).to eq new_bank_account
+        expect(model.bank_account).to eq bank_account
         expect(model.bank_account_ciphertext).not_to be nil
       end
 
@@ -144,13 +143,13 @@ RSpec.describe Hubbado::UpsertVersion do
     end
 
     context 'when insert conflicts with unique constraint' do
-      let(:model_version) { new_version - 1 }
+      let(:model_version) { version - 1 }
 
       let!(:model) do
         model_class.create!(
           id: id,
-          bank_account: "12345",
-          iban: "GB12345",
+          bank_account: Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.other_bank_account,
+          iban: Hubbado::UpsertVersion::Controls::Models::AttrEncryptedModel.iban,
           version: model_version
         )
       end
@@ -158,8 +157,8 @@ RSpec.describe Hubbado::UpsertVersion do
       context 'and model is in lower version' do
         it 'does update the existing model' do
           expect { subject.(attributes); model.reload }
-            .to change { model.bank_account }.to(new_bank_account)
-            .and change { model.version }.from(model_version).to(new_version)
+            .to change { model.bank_account }.to(bank_account)
+            .and change { model.version }.from(model_version).to(version)
             .and change { model.updated_at }
         end
 
@@ -172,13 +171,13 @@ RSpec.describe Hubbado::UpsertVersion do
           let(:attributes) do
             {
               id: id,
-              version: new_version
+              version: version
             }
           end
 
           it 'does update the existing model' do
             expect { subject.(attributes); model.reload }
-              .to change { model.version }.from(model_version).to(new_version)
+              .to change { model.version }.from(model_version).to(version)
               .and change { model.updated_at }
           end
         end
@@ -189,7 +188,7 @@ RSpec.describe Hubbado::UpsertVersion do
   context 'when dealing with dual target column' do
     subject { described_class.new(model_class, target: %i[user_id chat_id]) }
 
-    let(:model_class) { Support::DualConstraintModel }
+    let(:model_class) { Hubbado::UpsertVersion::Controls::Models::DualConstraintModel }
     let(:attributes) { {
       "user_id" => user_id,
       "chat_id" => chat_id,

@@ -24,4 +24,13 @@ RSpec.describe Hubbado::UpsertVersion::Substitute do
     expect(caller.upsert_version.called?).to eq true
     expect(caller.upsert_version.called_with?(attributes)).to eq true
   end
+
+  it 'can set the result' do
+    caller = caller_class.new
+    result = Hubbado::UpsertVersion::Controls::Upserted.example
+
+    caller.upsert_version.set_result(result)
+
+    expect(caller.upsert_version.(nil)).to eq result
+  end
 end
