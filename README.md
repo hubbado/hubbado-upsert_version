@@ -4,7 +4,7 @@ Provides an ActiveRecord based upsert with a per row version column
 
 Upsert means that if an attempted INSERT results in a conflict then an UPDATE is done instead. This is atomic, but it requires that a duplicate entry is detected. Duplicate rows are detected based on the column values for the row or rows passed to `target`. A unique constraint for these columns must exist in the database.
 
-A version is provided along with the row data. If an existing row has a version number greater than this version then no changes are made.
+A version is provided along with the row data. If an existing row has a version number greater than or equal to this version then no changes are made.
 
 ## Installation
 
