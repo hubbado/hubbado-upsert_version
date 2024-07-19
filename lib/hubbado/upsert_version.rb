@@ -9,22 +9,26 @@ module Hubbado
 
     configure :upsert_version
 
-    attr_reader :klass, :target
+    attr_reader :klass
+    attr_reader :target
+    attr_reader :version_column_name
 
     Error = Class.new(StandardError)
 
     Unchanged = Data.define { def upserted? = false }
     Upserted = Data.define(:attributes) { def upserted? = true }
 
-    def self.build(klass, target: nil)
-      new(klass, target: target)
+    def self.build(...)
+      new(...)
     end
 
-    def initialize(klass, target: nil)
+    def initialize(klass, target: nil, version_column_name: nil)
       target ||= klass.primary_key
+      version_column_name ||= :version
 
       @klass = klass
       @target = Array.wrap(target).map(&:to_sym)
+      @version_column_name = version_column_name
     end
 
     def call(attributes)
@@ -33,9 +37,9 @@ module Hubbado
         [key.to_sym, table[key].type_cast_for_database(value)]
       end
 
-      if casted.values_at(*target, :version).any?(&:blank?)
-        raise Error,
-          "Both target (#{target.join ', '}) and version values are required for upsert_version"
+      if casted.values_at(*target, version_column_name).any?(&:blank?)
+        raise Error, "Both target (#{target.join ', '}) and #{version_column_name} values" \
+          " are required for upsert_version"
       end
 
       now = DateTime.now.utc
@@ -119,7 +123,11 @@ module Hubbado
       manager = Arel::UpdateManager.new
         .table(table)
         .set(set_values)
-        .where(table[:version].lt attributes[:version])
+        .where(
+          table[version_column_name]
+            .lt(attributes[version_column_name])
+            .or(table[version_column_name].eq(nil))
+        )
 
       manager.to_sql.sub(/^UPDATE "[^"]*"/, 'UPDATE')
     end
