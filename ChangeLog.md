@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+# [2.3.0 - 2024-07-19]
+## Added
+- `version_column_name` is introduced
+This will allow to use several version columns in the same table.
+By default, `version_column_name` is `version`
+
 # [2.2.1 - 2024-01-10]
 ## Fixed
 - Style guide violations are fixed
