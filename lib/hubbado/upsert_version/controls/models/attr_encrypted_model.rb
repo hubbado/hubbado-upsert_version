@@ -40,7 +40,7 @@ module Hubbado
           end
 
           class AttrEncryptedModel < ActiveRecord::Base
-            lockbox_encrypts :bank_account, :iban
+            has_encrypted :bank_account, :iban
           end
         end
       end

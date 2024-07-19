@@ -19,6 +19,10 @@ module Hubbado
             Version.example
           end
 
+          def self.custom_version
+            Version.example + 1
+          end
+
           class Model < ActiveRecord::Base; end
         end
       end
