@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+# [Unrelased]
+## Changed
+- Upserted result is replaceed with Updated and Inserted
+
 # [2.3.0 - 2024-07-19]
 ## Added
 - `version_column_name` is introduced

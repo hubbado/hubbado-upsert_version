@@ -15,8 +15,26 @@ module Hubbado
 
     Error = Class.new(StandardError)
 
-    Unchanged = Data.define { def upserted? = false }
-    Upserted = Data.define(:attributes) { def upserted? = true }
+    Unchanged = Data.define do
+      def unchanged? = true
+
+      def inserted? = false
+      def updated? = false
+    end
+
+    Inserted = Data.define(:attributes) do
+      def unchanged? = false
+
+      def inserted? = true
+      def updated? = false
+    end
+
+    Updated = Data.define(:attributes) do
+      def unchanged? = false
+
+      def inserted? = false
+      def updated? = true
+    end
 
     def self.build(...)
       new(...)
@@ -57,12 +75,25 @@ module Hubbado
       update = upsert_update(casted)
 
       result = ActiveRecord::Base.connection.execute(
-        "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update} RETURNING *"
+        "#{insert} ON CONFLICT (#{target.join(', ')}) DO #{update} RETURNING *, xmax"
       )
       attributes = result.to_a.first
 
       if attributes
-        Upserted.new(attributes)
+        # If xmax = 0, it means the row was inserted.
+        # If xmax > 0, it means the row was updated, and the value represents
+        # the transaction ID that updated it.
+        #
+        # This method works because in PostgreSQL, xmax tracks the transaction
+        # ID that deleted or updated a row. If the row is newly inserted, xmax
+        # remains 0 since no prior transaction modified it.
+        xmax = attributes.delete('xmax').to_i
+
+        if xmax == 0
+          Inserted.new(attributes)
+        else
+          Updated.new(attributes)
+        end
       else
         Unchanged.new
       end
