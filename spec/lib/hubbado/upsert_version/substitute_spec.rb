@@ -24,7 +24,7 @@ RSpec.describe Hubbado::UpsertVersion::Substitute do
 
   it 'can set the result' do
     caller = caller_class.new
-    result = Hubbado::UpsertVersion::Controls::Upserted.example
+    result = Hubbado::UpsertVersion::Controls::Updated.example
 
     caller.upsert_version.set_result(result)
 

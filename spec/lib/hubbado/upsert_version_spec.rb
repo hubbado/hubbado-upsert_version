@@ -46,10 +46,10 @@ RSpec.describe Hubbado::UpsertVersion do
         expect(model.updated_at).to be_within(2.seconds).of(Time.current)
       end
 
-      it "returns a result with the upserted values" do
+      it "returns a result with the inserted values" do
         result = subject.(attributes)
 
-        expect(result.upserted?).to eq(true)
+        expect(result).to be_inserted
         expect(result.attributes).to include(
           **attributes
         )
@@ -69,10 +69,10 @@ RSpec.describe Hubbado::UpsertVersion do
             .and change { model.updated_at }
         end
 
-        it "returns a result with the upserted values" do
+        it "returns a result with the updated values" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(true)
+          expect(result).to be_updated
           expect(result.attributes).to include(
             **attributes
           )
@@ -86,10 +86,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
 
@@ -100,10 +100,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
     end
@@ -224,10 +224,10 @@ RSpec.describe Hubbado::UpsertVersion do
         expect { subject.(attributes) }.to change { model_class.count }.by 1
       end
 
-      it "returns a result with the upserted values" do
+      it "returns a result with the inserted values" do
         result = subject.(attributes)
 
-        expect(result.upserted?).to eq(true)
+        expect(result).to be_inserted
         expect(result.attributes).to include(
           **attributes
         )
@@ -253,10 +253,10 @@ RSpec.describe Hubbado::UpsertVersion do
             .and change { model.version }.from(model_version).to(new_version)
         end
 
-        it "returns a result with the upserted values" do
+        it "returns a result with the updated values" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(true)
+          expect(result).to be_updated
           expect(result.attributes).to include(
             **attributes
           )
@@ -270,10 +270,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.company_id }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
 
@@ -284,10 +284,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.company_id }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
     end
@@ -318,10 +318,10 @@ RSpec.describe Hubbado::UpsertVersion do
         expect(model.updated_at).to be_within(2.seconds).of(Time.current)
       end
 
-      it "returns a result with the upserted values" do
+      it "returns a result with the inserted values" do
         result = subject.(attributes)
 
-        expect(result.upserted?).to eq(true)
+        expect(result).to be_inserted
         expect(result.attributes).to include(
           **attributes
         )
@@ -341,10 +341,10 @@ RSpec.describe Hubbado::UpsertVersion do
             .and change { model.updated_at }
         end
 
-        it "returns a result with the upserted values" do
+        it "returns a result with the updated values" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(true)
+          expect(result).to be_updated
           expect(result.attributes).to include(
             **attributes
           )
@@ -358,10 +358,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
 
@@ -372,10 +372,10 @@ RSpec.describe Hubbado::UpsertVersion do
           expect { subject.(attributes); model.reload }.not_to change { model.subject }
         end
 
-        it "does not return upserted result" do
+        it "returns an unchanged result" do
           result = subject.(attributes)
 
-          expect(result.upserted?).to eq(false)
+          expect(result).to be_unchanged
         end
       end
     end

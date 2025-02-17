@@ -1,11 +1,11 @@
 module Hubbado
   class UpsertVersion
     module Controls
-      module Upserted
+      module Inserted
         def self.example(attributes = nil)
           attributes ||= Attributes.example
 
-          Hubbado::UpsertVersion::Upserted.new(attributes)
+          Hubbado::UpsertVersion::Inserted.new(attributes)
         end
       end
     end
