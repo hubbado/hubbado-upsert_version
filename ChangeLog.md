@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 # [Unrelased]
 ## Changed
-- Upserted result is replaceed with Updated and Inserted
+- Upserted result is replaced with Updated and Inserted
 
 # [2.3.0 - 2024-07-19]
 ## Added
