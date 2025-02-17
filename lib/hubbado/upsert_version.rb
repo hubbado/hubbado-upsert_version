@@ -1,4 +1,3 @@
-require "hubbado/upsert_version/version"
 require 'active_record'
 require 'configure'
 require 'mimic'
