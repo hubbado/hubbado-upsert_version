@@ -34,7 +34,7 @@ jobs:
       - name: Install dependent libraries
         run: sudo apt-get install -y libpq-dev
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -52,7 +52,7 @@ jobs:
           DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: coverage
