@@ -6,7 +6,5 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gemspec
 
 group :development do
-  source "https://rubygems.pkg.github.com/hubbado" do
-    gem 'hubbado-style'
-  end
+  gem 'hubbado-style'
 end
