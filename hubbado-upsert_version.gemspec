@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "evt-dependency"
   spec.add_development_dependency "lockbox"
   spec.add_development_dependency "debug"
+  spec.add_development_dependency "hubbado-style"
   spec.add_development_dependency "database_cleaner-active_record"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rake"
